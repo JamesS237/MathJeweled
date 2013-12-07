@@ -34,7 +34,6 @@ function checkBoard(x1, y1, x2, y2) {
 	}
 	if (x1 != x2) {
 		var secondRow = "";
-
 		for (var i = 0; i < pieces.length; i++) {
 			if (pieces[x2][i] > 9) {
 				secondRow += operatorIDIntoOperator(pieces[x2][i]);
@@ -47,10 +46,7 @@ function checkBoard(x1, y1, x2, y2) {
 	for (var i = 0; i < params.dimensions[0]; i++) {
 		for (var j = 3; j < params.dimensions[0] - i + 1; j++) {
 			try {
-				if (eval(firstRow.substr(i, j)) == target) {
-					console.log('success');
-				}
-				if (eval(secondRow.substr(i, j)) == target) {
+				if (eval(firstRow.substr(i, j)) == target || (secondRow != undefined && secondRow.substr(i, j) == target)) {
 					console.log('success');
 				}
 			}
