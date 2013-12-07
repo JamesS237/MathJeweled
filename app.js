@@ -1,6 +1,7 @@
 //globals
 var pieces;
 var params;
+var boardExists;
 
 function getRandomInt(low, high) {
 	return parseInt(Math.random() * (high - low + 1) + low);
@@ -54,7 +55,8 @@ function drawPieces() {
 		sizePieces();
 	}
 }
-function generateBoard(params) {
+function generateBoard() {
+	boardExists = true;
 	console.log('running');
 	pieces = [];
 	for (i = 0; i < params.dimensions[1]; i++) {
@@ -64,7 +66,7 @@ function generateBoard(params) {
 		}
 	}
 	console.log(pieces);
-	drawPieces(params.dimensions);
+	drawPieces();
 }
 
 function startGame() {
@@ -80,6 +82,11 @@ function startGame() {
 	generateBoard(params);
 }
 
+$(window).resize(function() {
+	if (boardExists) {
+		sizePieces();
+	}
+});
 
 $(document).ready(function() {
 	var currentUnix = new Date().getTime();
@@ -96,9 +103,5 @@ $(document).ready(function() {
 		} else {
 			$(this).addClass('selected');
 		}
-	});
-
-	$(window).resize(function() {
-		sizePieces();
 	});
 });
