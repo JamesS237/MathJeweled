@@ -4,6 +4,14 @@ var params;
 var boardExists;
 var target = 10;
 
+function removeSolution(coordinates, horizontal) {
+	if (horizontal) {
+
+	} else {
+		
+	}
+}
+
 function getRandomInt(low, high) {
 	return parseInt(Math.random() * (high - low + 1) + low);
 }
@@ -22,6 +30,8 @@ function sizePieces() {
 }
 
 function checkBoard(x1, y1, x2, y2) {
+
+	//check the rows...
 
 	var firstRow = "";
 
@@ -51,7 +61,7 @@ function checkBoard(x1, y1, x2, y2) {
 			try {
 				equation1 = firstRow.substr(i, j);
 				if (eval(equation1) == target) {
-					console.log(equation1 + ' success');
+					removeSolution(i, j, )
 				}
 			}
 			catch (Error) {
@@ -59,6 +69,50 @@ function checkBoard(x1, y1, x2, y2) {
 			}
 			try {
 				equation2 = secondRow.substr(i, j);
+				if (eval(equation2) == target) {
+					console.log(equation2 + ' success');
+				}
+			}
+			catch (Error) {
+
+			}
+		}
+	}
+
+	var firstColumn = "";
+
+	for (var i = 0; i < pieces.length; i++) {
+		if (pieces[i][y1] > 9) {
+			firstColumn += operatorIDIntoOperator(pieces[i][y1]);
+		} else {
+			firstColumn += pieces[i][y1];
+		}
+	}
+
+	if (y1 != y2) {
+		var secondColumn = "";
+		for (var i = 0; i < pieces.length; i++) {
+			if (pieces[i][y2] > 9) {
+				secondColumn += operatorIDIntoOperator(pieces[i][y2]);
+			} else {
+				secondColumn += pieces[i][y2];
+			}
+		}
+	}
+
+	for (var i = 0; i < params.dimensions[1]; i++) {
+		for (var j = 3; j < params.dimensions[1] - i + 1; j++) {
+			try {
+				equation1 = firstColumn.substr(i, j);
+				if (eval(equation1) == target) {
+					console.log(equation1 + ' success');
+				}
+			}
+			catch (Error) {
+
+			}
+			try {
+				equation2 = secondColumn.substr(i, j);
 				if (eval(equation2) == target) {
 					console.log(equation2 + ' success');
 				}
