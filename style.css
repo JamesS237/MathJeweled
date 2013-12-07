@@ -80,6 +80,7 @@ section#main #start-game:hover {
 
 #board {
 	width: 60%;
+	float: left;
 }
 
 .tile {
@@ -108,4 +109,12 @@ section#main #start-game:hover {
 .psuedo-selected {
 	background-color: #c0392b;
 	color: #ecf0f1;
+}
+#scoreboard {
+	float: right;
+	width: 30%;
+	text-align: center;
+}
+#score {
+	font-size: 1.5em;
 }
