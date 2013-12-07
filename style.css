@@ -1,4 +1,8 @@
 
+* {
+	font-family: 'Open Sans', sans-serif;
+}
+
 body {
 	background-image: url('http://androidwallpape.rs/content/02-wallpapers/101-newyork/NY-1920x1200.png');
 	background-size: cover;
@@ -12,15 +16,18 @@ section#main {
 	background-color: #ecf0f1;
 }
 
-a#start-game {
-	margin: 0.5em;
-	padding: 1em;
-	font-size: 1.5em;
+button#start-game {
+	border: none;
+	outline: none;
+	box-shadow: none;
+	padding: 1em 1.5em;
+	font-size: 1em;
+	font-weight: 300;
 	color: #ecf0f1;
 	background-color: #2980b9;
 	cursor: pointer;
 }
 
-a#start-game:hover {
+button#start-game:hover {
 	background-color: #3498db;
 }
