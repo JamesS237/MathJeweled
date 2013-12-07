@@ -18,7 +18,7 @@ function generatePiece(id, diff) { //identifier is 1-10
 	}
 }
 
-function drawPieces() {
+function drawPieces(dimensions) {
 	for (i = 0; i < pieces.length; i++) {
 		$('#board').append("<div class='row'>");
 		for (j = 0; j < pieces[i].length; j++) {
@@ -39,6 +39,8 @@ function drawPieces() {
 		}
 		$('#board').append("</div>");
 	}
+	$('.tile').css('width', 100 / dimensions[0] + "%")
+	$('.tile').css('height', 100 / dimensions[1] + "%")
 }
 function generateBoard(params) {
 	console.log('running');
@@ -50,7 +52,7 @@ function generateBoard(params) {
 		}
 	}
 	console.log(pieces);
-	drawPieces();
+	drawPieces(params.dimensions);
 }
 
 function startGame() {

@@ -80,7 +80,5 @@ section#main #start-game:hover {
 	display: inline-block;
 	font-size: 1.5em;
 	background-color: #ecf0f1;
-	width: 10%;
-	height: 10%;
 	line-height: 100%;
 }
