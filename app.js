@@ -20,8 +20,8 @@ function sizePieces() {
 	}, 1000);
 }
 
-function checkBoard() {
-
+function checkBoard(x1, y1, x2, y2) {
+	
 }
 
 function generatePiece(id, diff) { //identifier is 1-10
