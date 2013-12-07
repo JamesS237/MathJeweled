@@ -1,0 +1,13 @@
+
+body {
+	background-image: url('http://androidwallpape.rs/content/02-wallpapers/101-newyork/NY-1920x1200.png');
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+section#main {
+	width: 65%;
+	margin: 2em auto;
+	padding: 5%;
+	background-color: #ecf0f1;
+}
