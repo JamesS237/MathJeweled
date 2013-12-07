@@ -46,7 +46,7 @@ function drawPieces() {
 				} else if (currentPiece == 11) {
 					currentPiece = '-';
 				} else if (currentPiece == 12) {
-					currentPiece = '*';
+					currentPiece = 'x';
 				} else if (currentPiece == 13) {
 					currentPiece = '/';
 				}
