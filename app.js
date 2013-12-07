@@ -18,6 +18,28 @@ function generatePiece(id, diff) { //identifier is 1-10
 	}
 }
 
+function drawPieces() {
+	for (i = 0; i < pieces.length; i++) {
+		$('#board').append("<div class='row'>");
+		for (j = 0; j < pieces[i].length; j++) {
+			var currentPiece = pieces[i][j];
+			if (currentPiece > 9) {
+				if (currentPiece == 10) {
+					currentPiece = '+';
+				} else if (currentPiece == 11) {
+					currentPiece = '-';
+				} else if (currentPiece == 12) {
+					currentPiece = '*';
+				} else if (currentPiece == 13) {
+					currentPiece = '/';
+				}
+			}
+			console.log('cp: ' + currentPiece);
+			$('#board').append("<div class='tile'>" + currentPiece + "</div>");
+		}
+		$('#board').append("</div>");
+	}
+}
 function generateBoard(params) {
 	console.log('running');
 	pieces = [];
@@ -27,22 +49,20 @@ function generateBoard(params) {
 			pieces[i][j] = generatePiece(getRandomInt(1, params.diffMax), params.diff);
 		}
 	}
-	var text;
-	for (i = 0; i < pieces.length; i++) {
-		for (j = 0; j < pieces[i].length; j++) {
-			$('#board').append("<div class='tile'>" + pieces[i][j] + "</div>");
-		}
-	}
 	console.log(pieces);
+	drawPieces();
 }
 
 function startGame() {
 	if ($('#seed').val() !== '') {
 		Math.seedrandom($('#seed').val());
 	}
-	var params = {diff: $('#diff').val(), dimensions: [10, 10]};
+	if ($('#diff').val() == 1) {
+		var diffMax = 3;
+	}
+	var params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [10, 10]};
 	$('#main-menu').hide("slow");
-	$('#game').show("slow");0
+	$('#game').show("slow");
 	generateBoard(params);
 }
 $(document).ready(function() {

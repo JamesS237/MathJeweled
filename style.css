@@ -75,3 +75,7 @@ section#main #start-game {
 section#main #start-game:hover {
 	background-color: #e74c3c;
 }
+
+.tile {
+	display: inline-block;
+}
