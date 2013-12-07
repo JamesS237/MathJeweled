@@ -38,7 +38,9 @@ function drawPieces() {
 		$('#board').append("<div class='row' id='row-" + i + "'>");
 		for (j = 0; j < pieces[i].length; j++) {
 			var currentPiece = pieces[i][j];
+			var operator = '';
 			if (currentPiece > 9) {
+				operator = 'operator';
 				if (currentPiece == 10) {
 					currentPiece = '+';
 				} else if (currentPiece == 11) {
@@ -49,7 +51,7 @@ function drawPieces() {
 					currentPiece = '/';
 				}
 			}
-			$('#board').append("<div class='tile' id='" + j + "'>" + currentPiece + "</div>");
+			$('#board').append("<div class='tile " + operator + "' id='" + j + "'>" + currentPiece + "</div>");
 		}
 		$('#board').append("</div>");
 		sizePieces();
@@ -86,6 +88,7 @@ $(window).resize(function() {
 	if (boardExists) {
 		sizePieces();
 	}
+
 });
 
 $(document).ready(function() {
