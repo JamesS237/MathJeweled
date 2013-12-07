@@ -2,18 +2,20 @@ function getRandomInt(low, high) {
 	return parseInt(Math.random() * (high - low + 1) + low);
 }
 
-function test() {
-	total = 0;
-
-	for (i = 0; i < 1000000; i++) {
-		random = getRandomInt(1, 50);
-		total += random;
+function startGame() {
+	console.log('wep');
+	if ($('#seed').val() !== '') {
+		Math.seedrandom($('#seed').val());
+		console.log(Math.random());
 	}
-
-	total /= 1000000;
-	console.log(total);
+	$('#main-menu').hide()
 }
-
 $(document).ready(function() {
-	test();
+	var currentUnix = new Date().getTime();
+	Math.seedrandom(currentUnix.toString());
+	console.log('document ready');
+});
+
+$('#start-game').click(function () {
+	startGame();
 });
