@@ -2,6 +2,7 @@
 var pieces;
 var params;
 var boardExists;
+var target = 10;
 
 function getRandomInt(low, high) {
 	return parseInt(Math.random() * (high - low + 1) + low);
@@ -31,8 +32,6 @@ function checkBoard(x1, y1, x2, y2) {
 			firstRow += pieces[x1][i];
 		}
 	}
-	console.log(x1);
-	console.log(x2);
 	if (x1 != x2) {
 		var secondRow = "";
 
@@ -45,11 +44,19 @@ function checkBoard(x1, y1, x2, y2) {
 		}
 	}
 
-	console.log(firstRow);
-	console.log(secondRow);
+	for (var i = 0; i < params.dimensions[0]; i++) {
+		for (var j = 3; j < params.dimensions[0] - i + 1; j++) {
+			try {
+				if (eval(firstRow.substr(i, j)) == target) {
+					console.log('success');
+				}
+				if (eval(secondRow.substr(i, j)) == target) {
+					console.log('success');
+				}
+			}
+			catch (Error) {
 
-	for (var i = 3; i < params.dimensions[0]; i++) {
-		for (var j = 0; j < params.dimensions[0] - i; j++) {
+			}
 		}
 	}
 }
