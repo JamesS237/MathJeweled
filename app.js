@@ -31,14 +31,17 @@ function checkBoard(x1, y1, x2, y2) {
 			firstRow += pieces[x1][i];
 		}
 	}
+	console.log(x1);
+	console.log(x2);
+	if (x1 != x2) {
+		var secondRow = "";
 
-	var secondRow = "";
-	
-	for (var i = 0; i < pieces.length; i++) {
-		if (pieces[x2][i] > 9) {
-			secondRow += operatorIDIntoOperator(pieces[x2][i]);
-		} else {
-			secondRow += pieces[x2][i];
+		for (var i = 0; i < pieces.length; i++) {
+			if (pieces[x2][i] > 9) {
+				secondRow += operatorIDIntoOperator(pieces[x2][i]);
+			} else {
+				secondRow += pieces[x2][i];
+			}
 		}
 	}
 
