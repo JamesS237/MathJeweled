@@ -25,7 +25,11 @@ function checkBoard(x1, y1, x2, y2) {
 	var firstRow = "";
 
 	for (var i = 0; i < pieces.length; i++) {
-		firstRow += pieces[i][y1];
+		if (pieces[i][y1] > 9) {
+			firstRow += operatorIDIntoOperator(pieces[i][y1]);
+		} else {
+			firstRow += pieces[i][y1];
+		}
 	}
 
 	console.log(firstRow);
