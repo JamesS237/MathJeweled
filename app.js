@@ -21,7 +21,19 @@ function sizePieces() {
 }
 
 function checkBoard(x1, y1, x2, y2) {
-	
+
+	var firstRow = "";
+
+	for (var i = 0; i < pieces.length; i++) {
+		firstRow += pieces[i][y1];
+	}
+
+	console.log(firstRow);
+
+	for (var i = 3; i < params.dimensions[0]; i++) {
+		for (var j = 0; j < params.dimensions[0] - i; j++) {
+		}
+	}
 }
 
 function generatePiece(id, diff) { //identifier is 1-10
@@ -37,6 +49,29 @@ function generatePiece(id, diff) { //identifier is 1-10
 	}
 }
 
+function operatorIDIntoString(id) {
+	if (id == 10) {
+		return '+';
+	} else if (id == 11) {
+		return '-';
+	} else if (id == 12) {
+		return '&times';
+	} else if (id == 13) {
+		return '&divide;';
+	}
+}
+function operatorIDIntoOperator(id) {
+	if (id == 10) {
+		return '+';
+	} else if (id == 11) {
+		return '-';
+	} else if (id == 12) {
+		return '*';
+	} else if (id == 13) {
+		return '/';
+	}
+}
+
 function drawPieces() {
 	for (i = 0; i < pieces.length; i++) {
 		$('#board').append("<div class='row' id='row-" + i + "'>");
@@ -45,15 +80,7 @@ function drawPieces() {
 			var operator = '';
 			if (currentPiece > 9) {
 				operator = 'operator';
-				if (currentPiece == 10) {
-					currentPiece = '+';
-				} else if (currentPiece == 11) {
-					currentPiece = '-';
-				} else if (currentPiece == 12) {
-					currentPiece = '&times';
-				} else if (currentPiece == 13) {
-					currentPiece = '&divide;';
-				}
+				currentPiece = operatorIDIntoString(currentPiece);
 			}
 			$('#row-' + i).append("<div class='tile " + operator + "' id='" + j + "'>" + currentPiece + "</div>");
 		}
@@ -127,6 +154,9 @@ $(document).ready(function() {
 						var temp = $('.psuedo-selected').html();
 						$('.psuedo-selected').html($('.selected').html());
 						$('.selected').html(temp);
+						temp = pieces[x][y];
+						pieces[x][y] = pieces[xSelected][ySelected];
+						pieces[xSelected][ySelected] = temp;
 						$('.psuedo-selected').css('color', '#ecf0f1');
 						$('.selected').css('color', '#ecf0f1');
 						setTimeout(function() {
@@ -134,6 +164,7 @@ $(document).ready(function() {
 							$('.selected').css('color', '#2c3e50');
 							$('.selected').removeClass('selected');
 							$('.psuedo-selected').removeClass('psuedo-selected');
+							checkBoard(xSelected, ySelected, x, y);
 						}, 500);
 					},500);
 				}
