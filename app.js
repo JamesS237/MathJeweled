@@ -21,15 +21,16 @@ function generatePiece(id, diff) { //identifier is 1-10
 function generateBoard(params) {
 	console.log('running');
 	pieces = [];
-	if (params.diff == 1) { //easy
-		if (params.dimensions !== undefined) {
-			boardArea = params.dimensions[0] * params.dimensions[1];
-			console.log(boardArea);
-		} else {
-			boardArea = 100;
+	for (i = 0; i < params.dimensions[1]; i++) {
+		pieces[i] = []
+		for (j = 0; j < params.dimensions[0]; j++) {
+			pieces[i][j] = generatePiece(getRandomInt(1, params.diffMax), params.diff);
 		}
-		for (i = 0; i < boardArea; i++) {
-			pieces.push(generatePiece(getRandomInt(1,3), 1));
+	}
+	var text;
+	for (i = 0; i < pieces.length; i++) {
+		for (j = 0; j < pieces[i].length; j++) {
+			$('#board').append("<div class='tile'>" + pieces[i][j] + "</div>");
 		}
 	}
 	console.log(pieces);
@@ -40,7 +41,8 @@ function startGame() {
 		Math.seedrandom($('#seed').val());
 	}
 	var params = {diff: $('#diff').val(), dimensions: [10, 10]};
-	$('#main *').hide()
+	$('#main-menu').hide("slow");
+	$('#game').show("slow");0
 	generateBoard(params);
 }
 $(document).ready(function() {
