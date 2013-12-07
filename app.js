@@ -78,3 +78,7 @@ $(document).ready(function() {
 $('#start-game').click(function () {
 	startGame();
 });
+
+$('#board').on('click', '.tile', function() {
+	$(this).addClass('selected');
+});
