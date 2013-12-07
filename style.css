@@ -92,6 +92,8 @@ section#main #start-game:hover {
 	font-weight: 300;
 	transition: 0.1s ease;
 	-webkit-transition: 0.1s ease;
+	transition: 0.5s color ease;
+	-webkit-transition: 0.5s color ease;
 }
 
 .operator {
@@ -100,6 +102,10 @@ section#main #start-game:hover {
 }
 
 .selected {
+	background-color: #c0392b;
+	color: #ecf0f1;
+}
+.psuedo-selected {
 	background-color: #c0392b;
 	color: #ecf0f1;
 }

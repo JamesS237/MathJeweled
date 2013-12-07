@@ -109,7 +109,10 @@ $(document).ready(function() {
 		if ($(this).hasClass('selected')) {
 			$(this).removeClass('selected');
 		} else {
-			if ($('.selected')[0]) {
+			if ($('.selected')[1]) {
+				return;
+			}
+			else if ($('.selected')[0]) {
 				var xSelected = parseInt($('.selected').parent().attr('id').substr(4));
 				var ySelected = parseInt($('.selected').attr('id'));
 
@@ -117,10 +120,22 @@ $(document).ready(function() {
 				var y = $(this).attr('id');
 
 				if ((Math.abs(xSelected - x) == 0 || Math.abs(xSelected - x) == 1) && (Math.abs(ySelected - y) == 0 || Math.abs(ySelected - y) == 1)) { //wihin range
-					var temp = $(this).html();
-					$(this).html($('.selected').html());
-					$('.selected').html(temp);
-					$('.selected').removeClass('selected');
+					$(this).addClass('psuedo-selected');
+					$('.psuedo-selected').css('color', 'rgba(255, 255, 255, 0)');
+					$('.selected').css('color', 'rgba(255, 255, 255, 0)');
+					setTimeout(function() {
+						var temp = $('.psuedo-selected').html();
+						$('.psuedo-selected').html($('.selected').html());
+						$('.selected').html(temp);
+						$('.psuedo-selected').css('color', '#ecf0f1');
+						$('.selected').css('color', '#ecf0f1');
+						setTimeout(function() {
+							$('.psuedo-selected').css('color', '#2c3e50');
+							$('.selected').css('color', '#2c3e50');
+							$('.selected').removeClass('selected');
+							$('.psuedo-selected').removeClass('psuedo-selected');
+						}, 500);
+					},500);
 				}
 			} else {
 				$(this).addClass('selected');
