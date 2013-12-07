@@ -25,14 +25,25 @@ function checkBoard(x1, y1, x2, y2) {
 	var firstRow = "";
 
 	for (var i = 0; i < pieces.length; i++) {
-		if (pieces[i][y1] > 9) {
-			firstRow += operatorIDIntoOperator(pieces[i][y1]);
+		if (pieces[y1][i] > 9) {
+			firstRow += operatorIDIntoOperator(pieces[y1][i]);
 		} else {
-			firstRow += pieces[i][y1];
+			firstRow += pieces[y1][i];
+		}
+	}
+
+	var secondRow = "";
+
+	for (var i = 0; i < pieces.length; i++) {
+		if (pieces[y2][i] > 9) {
+			secondRow += operatorIDIntoOperator(pieces[y2][i]);
+		} else {
+			secondRow += pieces[y2][i];
 		}
 	}
 
 	console.log(firstRow);
+	console.log(secondRow);
 
 	for (var i = 3; i < params.dimensions[0]; i++) {
 		for (var j = 0; j < params.dimensions[0] - i; j++) {
