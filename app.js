@@ -4,11 +4,55 @@ var params;
 var boardExists;
 var target = 10;
 
-function removeSolution(coordinates, horizontal) {
+function removeSolution(coordinate, length, horizontal) {
+	//coordinate 0 is row, coordinate 1 is column
 	if (horizontal) {
-
+		for (i = 0; i < length; i++) {
+			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html("&darr;");
+		}
+		for (j = 0; j < length; j++) {
+			for (i = 0; i < coordinate[0]; i++) {
+				pieces[i + 1][coordinate[1] + j] = pieces[i][coordinate[1] + j];
+			}
+			var newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+			if (newPiece > 9) {
+				newPiece = operatorIDIntoString(newPiece);
+			}
+			pieces[0][coordinate[1] + j] = newPiece;
+			setTimeout(function() {
+				for (i = 0; i < coordinate[0]; i++) {
+					console.log((coordinate[1] + j) + ", " + i + " - " + pieces[i][coordinate[1] + j]);
+					if (pieces[i][coordinate[1] + j] > 9) {
+						$('#row-' + i + ' #' + (coordinate[1] + j)).html(operatorIDIntoString(pieces[i][coordinate[1] + j]));
+					} else {
+						$('#row-' + i + ' #' + (coordinate[1] + j)).html(pieces[i][coordinate[1] + j]);
+					}
+				}
+			}, 1000);
+		}
 	} else {
-		
+		for (i = 0; i < length; i++) {
+			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html("&darr;");
+		}
+		for (i = 0; i < coordinate[0]; i++) {
+			pieces[i + length][coordinate[1]] = pieces[i][coordinate[1]];
+		}
+		for (i = 0; i < length; i++) {
+			var newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+			if (newPiece > 9) {
+				newPiece = operatorIDIntoString(newPiece);
+			}
+			pieces[i][coordinate[1]] = newPiece;
+		}
+		setTimeout(function() {
+			for (i = 0; i < coordinate[0] + length; i++) {
+				if (pieces[i][coordinate[1]] > 9) {
+					$('#row-' + i + ' #' + coordinate[1]).html(operatorIDIntoString(pieces[i][coordinate[1]]));
+				} else {
+					$('#row-' + i + ' #' + coordinate[1]).html(pieces[i][coordinate[1]]);
+				}
+			}
+		}, 1000);
 	}
 }
 
@@ -55,13 +99,15 @@ function checkBoard(x1, y1, x2, y2) {
 
 	var equation1;
 	var equation2;
+	var coordinates;
 
 	for (var i = 0; i < params.dimensions[0]; i++) {
 		for (var j = 3; j < params.dimensions[0] - i + 1; j++) {
 			try {
 				equation1 = firstRow.substr(i, j);
 				if (eval(equation1) == target) {
-					removeSolution(i, j, )
+					console.log('success');
+					removeSolution([x1, i], j, true);
 				}
 			}
 			catch (Error) {
@@ -70,7 +116,8 @@ function checkBoard(x1, y1, x2, y2) {
 			try {
 				equation2 = secondRow.substr(i, j);
 				if (eval(equation2) == target) {
-					console.log(equation2 + ' success');
+					console.log('success');
+					removeSolution([x2, i], j, true);
 				}
 			}
 			catch (Error) {
@@ -105,7 +152,8 @@ function checkBoard(x1, y1, x2, y2) {
 			try {
 				equation1 = firstColumn.substr(i, j);
 				if (eval(equation1) == target) {
-					console.log(equation1 + ' success');
+					console.log('success');
+					removeSolution([i, y1], j, false);
 				}
 			}
 			catch (Error) {
@@ -114,7 +162,8 @@ function checkBoard(x1, y1, x2, y2) {
 			try {
 				equation2 = secondColumn.substr(i, j);
 				if (eval(equation2) == target) {
-					console.log(equation2 + ' success');
+					console.log('success');
+					removeSolution([i, y2], j, false);
 				}
 			}
 			catch (Error) {
