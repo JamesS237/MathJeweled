@@ -20,6 +20,10 @@ function sizePieces() {
 	}, 1000);
 }
 
+function checkBoard() {
+
+}
+
 function generatePiece(id, diff) { //identifier is 1-10
 	if (diff == 1) { //easy
 		if (id == 1) { //generate an operator
@@ -51,9 +55,8 @@ function drawPieces() {
 					currentPiece = '&divide;';
 				}
 			}
-			$('#board').append("<div class='tile " + operator + "' id='" + j + "'>" + currentPiece + "</div>");
+			$('#row-' + i).append("<div class='tile " + operator + "' id='" + j + "'>" + currentPiece + "</div>");
 		}
-		$('#board').append("</div>");
 		sizePieces();
 	}
 }
@@ -106,7 +109,22 @@ $(document).ready(function() {
 		if ($(this).hasClass('selected')) {
 			$(this).removeClass('selected');
 		} else {
-			$(this).addClass('selected');
+			if ($('.selected')[0]) {
+				var xSelected = parseInt($('.selected').parent().attr('id').substr(4));
+				var ySelected = parseInt($('.selected').attr('id'));
+
+				var x = $(this).parent().attr('id').substr(4);
+				var y = $(this).attr('id');
+
+				if ((Math.abs(xSelected - x) == 0 || Math.abs(xSelected - x) == 1) && (Math.abs(ySelected - y) == 0 || Math.abs(ySelected - y) == 1)) { //wihin range
+					var temp = $(this).html();
+					$(this).html($('.selected').html());
+					$('.selected').html(temp);
+					$('.selected').removeClass('selected');
+				}
+			} else {
+				$(this).addClass('selected');
+			}
 		}
 	});
 });
