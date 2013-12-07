@@ -90,8 +90,8 @@ section#main #start-game:hover {
 	font-weight: 300;
 	cursor: pointer;
 	font-weight: 300;
-	transition: 0.5s ease;
-	-webkit-transition: 0.5s ease;
+	transition: 0.1s ease;
+	-webkit-transition: 0.1s ease;
 }
 
 .operator {
@@ -100,6 +100,6 @@ section#main #start-game:hover {
 }
 
 .selected {
-	background-color: #2980b9;
+	background-color: #c0392b;
 	color: #ecf0f1;
 }
