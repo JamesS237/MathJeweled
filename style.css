@@ -12,4 +12,14 @@ section#main {
 	background-color: #ecf0f1;
 }
 
-a
+a#start-game {
+	padding: 1em;
+	font-size: 1.5em;
+	color: #ecf0f1;
+	background-color: #2980b9;
+	cursor: pointer;
+}
+
+a#start-game:hover {
+	background-color: #3498db;
+}
