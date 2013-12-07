@@ -84,13 +84,5 @@ section#main #start-game:hover {
 	display: inline-block;
 	font-size: 1.5em;
 	background-color: #ecf0f1;
-	text-align: center;
-	cursor: pointer;
-	transition: 0.5s ease;
-	-webkit-transition: 0.5s ease;
-}
-
-.selected {
-	background-color: #2980b9;
-	color: #ecf0f1;
+	line-height: 100%;
 }
