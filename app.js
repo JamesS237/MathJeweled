@@ -20,6 +20,7 @@ function generatePiece(id, diff) { //identifier is 1-10
 	}
 }
 function generateBoard(params) {
+	console.log('running');
 	pieces = [];
 	if (params.diff == 1) { //easy
 		for (i = 0; i < 100; i++) {
@@ -30,12 +31,10 @@ function generateBoard(params) {
 }
 
 function startGame() {
-	console.log('wep');
 	if ($('#seed').val() !== '') {
 		Math.seedrandom($('#seed').val());
 		console.log(Math.random());
 	}
-	$('#main-menu').hide();
 	params = {diff: $('#diff').val()};
 	generateBoard(params);
 }
