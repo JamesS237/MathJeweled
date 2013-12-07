@@ -43,11 +43,24 @@ function checkBoard(x1, y1, x2, y2) {
 		}
 	}
 
+	var equation1;
+	var equation2;
+
 	for (var i = 0; i < params.dimensions[0]; i++) {
 		for (var j = 3; j < params.dimensions[0] - i + 1; j++) {
 			try {
-				if (eval(firstRow.substr(i, j)) == target || (secondRow != undefined && secondRow.substr(i, j) == target)) {
-					console.log('success');
+				equation1 = firstRow.substr(i, j);
+				if (eval(equation1) == target) {
+					console.log(equation1 + ' success');
+				}
+			}
+			catch (Error) {
+
+			}
+			try {
+				equation2 = secondRow.substr(i, j);
+				if (eval(equation2) == target) {
+					console.log(equation2 + ' success');
 				}
 			}
 			catch (Error) {
