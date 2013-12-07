@@ -15,6 +15,8 @@ section#main {
 	padding: 2% 5%;
 	padding-bottom: 5%;
 	background-color: #ecf0f1;
+	transition: 0.5s ease;
+	-webkit-transition: 0.5s ease;
 }
 
 section#main p {
@@ -77,7 +79,7 @@ section#main #start-game:hover {
 }
 
 #board {
-	width: 60%;
+	width: 75%;
 }
 
 .tile {
