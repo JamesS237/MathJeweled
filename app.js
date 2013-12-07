@@ -58,7 +58,8 @@ function drawPieces() {
 	}
 }
 function generateBoard() {
-	$('#main').css('width', '75%');
+	$('#main').css('width', '70%');
+	$('#main').css('padding', '4%');
 	boardExists = true;
 	console.log('running');
 	pieces = [];
