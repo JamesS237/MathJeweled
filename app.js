@@ -17,11 +17,18 @@ function generatePiece(id, diff) { //identifier is 1-10
 		// 10 is plus, 11 is minus, 12 is multiply, 13 is divide
 	}
 }
+
 function generateBoard(params) {
 	console.log('running');
 	pieces = [];
 	if (params.diff == 1) { //easy
-		for (i = 0; i < 100; i++) {
+		if (params.dimensions !== undefined) {
+			boardArea = params.dimensions[0] * params.dimensions[1];
+			console.log(boardArea);
+		} else {
+			boardArea = 100;
+		}
+		for (i = 0; i < boardArea; i++) {
 			pieces.push(generatePiece(getRandomInt(1,3), 1));
 		}
 	}
@@ -31,9 +38,8 @@ function generateBoard(params) {
 function startGame() {
 	if ($('#seed').val() !== '') {
 		Math.seedrandom($('#seed').val());
-		console.log(Math.random());
 	}
-	var params = {diff: $('#diff').val()};
+	var params = {diff: $('#diff').val(), dimensions: [10, 10]};
 	$('#main *').hide()
 	generateBoard(params);
 }
