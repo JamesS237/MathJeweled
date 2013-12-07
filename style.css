@@ -76,6 +76,10 @@ section#main #start-game:hover {
 	background-color: #e74c3c;
 }
 
+#board {
+	width: 60%;
+}
+
 .tile {
 	display: inline-block;
 	font-size: 1.5em;

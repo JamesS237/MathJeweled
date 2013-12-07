@@ -64,7 +64,7 @@ function startGame() {
 	if ($('#diff').val() == 1) {
 		var diffMax = 3;
 	}
-	var params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [10, 10]};
+	var params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [7, 7]};
 	$('#main-menu').hide("slow");
 	$('#game').show("slow");
 	generateBoard(params);
