@@ -1,8 +1,22 @@
 //globals
 var pieces;
+var params;
 
 function getRandomInt(low, high) {
 	return parseInt(Math.random() * (high - low + 1) + low);
+}
+
+function getTileDimensions() {
+	return $('.tile').outerWidth();
+}
+
+function sizePieces() {
+	$('.tile').css('width', 100 / params.dimensions[0] + "%");
+	setTimeout(function() {
+		$('.tile').css('height', getTileDimensions() + "px");
+		$('.tile').css('line-height', getTileDimensions() + "px");
+		$('.tile').css('font-size', getTileDimensions() * 0.75 + "px");
+	}, 1000);
 }
 
 function generatePiece(id, diff) { //identifier is 1-10
@@ -18,7 +32,7 @@ function generatePiece(id, diff) { //identifier is 1-10
 	}
 }
 
-function drawPieces(dimensions) {
+function drawPieces() {
 	for (i = 0; i < pieces.length; i++) {
 		$('#board').append("<div class='row' id='row-" + i + "'>");
 		for (j = 0; j < pieces[i].length; j++) {
@@ -34,15 +48,11 @@ function drawPieces(dimensions) {
 					currentPiece = '/';
 				}
 			}
-			console.log('cp: ' + currentPiece);
 			$('#board').append("<div class='tile' id='" + j + "'>" + currentPiece + "</div>");
 		}
 		$('#board').append("</div>");
+		sizePieces();
 	}
-	$('.tile').css('width', 100 / dimensions[0] + "%");
-	setTimeout(function() {
-		$('.tile').css('height', $('.tile').outerWidth() + "px");
-	},1000);
 }
 function generateBoard(params) {
 	console.log('running');
@@ -64,21 +74,31 @@ function startGame() {
 	if ($('#diff').val() == 1) {
 		var diffMax = 3;
 	}
-	var params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [7, 7]};
+	params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [7, 7]};
 	$('#main-menu').hide("slow");
 	$('#game').show("slow");
 	generateBoard(params);
 }
+
+
 $(document).ready(function() {
 	var currentUnix = new Date().getTime();
 	Math.seedrandom(currentUnix.toString());
 	console.log('document ready');
-});
 
-$('#start-game').click(function () {
-	startGame();
-});
+	$('#start-game').click(function () {
+		startGame();
+	});
 
-$('#board').on('click', '.tile', function() {
-	$(this).addClass('selected');
+	$('#board').on('click', '.tile', function() {
+		if ($(this).hasClass('selected')) {
+			$(this).removeClass('selected');
+		} else {
+			$(this).addClass('selected');
+		}
+	});
+
+	$(window).resize(function() {
+		sizePieces();
+	});
 });
