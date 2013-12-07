@@ -40,7 +40,7 @@ function drawPieces(dimensions) {
 		$('#board').append("</div>");
 	}
 	$('.tile').css('width', 100 / dimensions[0] + "%")
-	$('.tile').css('height', 100 / dimensions[1] + "%")
+	$('.tile').css('height', $('.tile').width());
 }
 function generateBoard(params) {
 	console.log('running');
