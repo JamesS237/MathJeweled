@@ -88,7 +88,6 @@ section#main #start-game:hover {
 	font-weight: 300;
 	cursor: pointer;
 	font-weight: 300;
-	border-radius: 10px;
 	transition: 0.5s ease;
 	-webkit-transition: 0.5s ease;
 }
