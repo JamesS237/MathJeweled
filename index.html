@@ -3,10 +3,19 @@
 <html>
 	
 	<head>
-		<title>Hello World! / Hackathon 2013</title>
+		<title>MathJeweled</title>
+		<link rel="stylesheet" href="style.css"/>
 	</head>
 
 	<body>
+		<div id="mainmenu">
+			<h2>MathJeweled</h2>
+			<p>Seed: <input id="seed" type="text"/></p>
+			<p>Difficulty: <select id="diff">
+			<option value="easy">Easy</option>
+			</select></p>
+			<button id="startgame">Start Game</button>
+		</div>
 		<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="seedrandom.js"></script>
 		<script src="app.js"></script>

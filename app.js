@@ -1,6 +1,3 @@
-var seed = '333dfsafds';
-Math.seedrandom(seed);
-
 function getRandomInt(low, high) {
 	return parseInt(Math.random() * (high - low + 1) + low);
 }
