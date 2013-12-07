@@ -39,8 +39,10 @@ function drawPieces(dimensions) {
 		}
 		$('#board').append("</div>");
 	}
-	$('.tile').css('width', 100 / dimensions[0] + "%")
-	$('.tile').css('height', $('.tile').width());
+	$('.tile').css('width', 100 / dimensions[0] + "%");
+	setTimeout(function() {
+		$('.tile').css('height', $('.tile').outerWidth() + "px");
+	},1000);
 }
 function generateBoard(params) {
 	console.log('running');
