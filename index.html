@@ -5,20 +5,19 @@
 	<head>
 		<title>MathJeweled</title>
 		<link rel="stylesheet" href="style.css"/>
+		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,700' rel='stylesheet' type='text/css'>
 	</head>
 
 	<body>
 		<section id="main">
-			<div id="main-menu">
-				<h2>MathJeweled</h2>
-				<p>Seed: </p><input id="seed" type="text"/>
-				<p>Difficulty:
-					<select id="diff">
-						<option value="easy">Easy</option>
-					</select>
-				</p>
-				<button id="start-game">Start Game</button>
-			</div>
+			<h1>MathJeweled</h1>
+			<p>Seed</p>
+			<input id="seed" type="text"/>
+			<p>Difficulty</p>
+			<select id="diff">
+				<option value="easy">Easy</option>
+			</select>
+			<button id="start-game">Start Game</button>
 		</section>
 		<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="seedrandom.js"></script>

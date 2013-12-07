@@ -1,6 +1,6 @@
 
 * {
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 
 body {
@@ -10,24 +10,34 @@ body {
 }
 
 section#main {
-	width: 65%;
+	width: 40%;
 	margin: 2em auto;
-	padding: 5%;
+	padding: 2% 5%;
 	background-color: #ecf0f1;
 }
 
-button#start-game {
+section#main {
+	
+}
+
+section#main h1 {
+	color: #2c3e50;
+	font-size: 5em;
+	font-weight: 300;
+}
+
+section#main #start-game {
 	border: none;
 	outline: none;
 	box-shadow: none;
 	padding: 1em 1.5em;
-	font-size: 1em;
+	font-size: 1.5em;
 	font-weight: 300;
 	color: #ecf0f1;
 	background-color: #2980b9;
 	cursor: pointer;
 }
 
-button#start-game:hover {
+section#main #start-game:hover {
 	background-color: #3498db;
 }
