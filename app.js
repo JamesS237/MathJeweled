@@ -20,7 +20,7 @@ function generatePiece(id, diff) { //identifier is 1-10
 
 function drawPieces(dimensions) {
 	for (i = 0; i < pieces.length; i++) {
-		$('#board').append("<div class='row'>");
+		$('#board').append("<div class='row' id='row-" + i + "'>");
 		for (j = 0; j < pieces[i].length; j++) {
 			var currentPiece = pieces[i][j];
 			if (currentPiece > 9) {
@@ -35,7 +35,7 @@ function drawPieces(dimensions) {
 				}
 			}
 			console.log('cp: ' + currentPiece);
-			$('#board').append("<div class='tile'>" + currentPiece + "</div>");
+			$('#board').append("<div class='tile' id='" + j + "'>" + currentPiece + "</div>");
 		}
 		$('#board').append("</div>");
 	}
