@@ -46,9 +46,9 @@ function drawPieces() {
 				} else if (currentPiece == 11) {
 					currentPiece = '-';
 				} else if (currentPiece == 12) {
-					currentPiece = 'x';
+					currentPiece = '&times';
 				} else if (currentPiece == 13) {
-					currentPiece = '/';
+					currentPiece = '&divide;';
 				}
 			}
 			$('#board').append("<div class='tile " + operator + "' id='" + j + "'>" + currentPiece + "</div>");
