@@ -4,55 +4,46 @@ var params;
 var boardExists;
 var target = 10;
 
+function simulateGravity() {
+	zeroesRemaining = true;
+	while (zeroesRemaining) {
+		for (i = 0; i < params.dimensions[0]; i++) {
+			for (j = 0; j < params.dimensions[1]; j++) {
+				if (pieces[i][j] == 0) {
+					pieces[i][j] = pieces[i-1][j];
+					pieces[i-1][j] = 0;
+					$('#row-' + (i-1) + ' #' + j).html("&darr;");
+					newPiece = pieces[i][j];
+					if (pieces[i][j] > 9) {
+						newPiece = operatorIDIntoString(pieces[i][j]);
+					}
+					$('#row-' + (i) + ' #' + j).html(newPiece);
+				}
+			}
+		}
+
+		zeroesRemaining = false;
+
+		for (i = 0; i < params.dimensions[0]; i++) {
+			for (j = 0; j < params.dimensions[1]; j++) {
+				if (pieces[i][j] == 0) {
+					zeroesRemaining = true;
+				}
+			}
+		}
+		console.log('loop');
+	}
+	console.log('function ran');
+}
 function removeSolution(coordinate, length, horizontal) {
 	//coordinate 0 is row, coordinate 1 is column
 	if (horizontal) {
 		for (i = 0; i < length; i++) {
 			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html("&darr;");
+			pieces[coordinate[0]][coordinate[1] + i] = 0;
 		}
-		for (j = 0; j < length; j++) {
-			for (i = 0; i < coordinate[0]; i++) {
-				pieces[i + 1][coordinate[1] + j] = pieces[i][coordinate[1] + j];
-			}
-			var newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
-			if (newPiece > 9) {
-				newPiece = operatorIDIntoString(newPiece);
-			}
-			pieces[0][coordinate[1] + j] = newPiece;
-			setTimeout(function() {
-				for (i = 0; i < coordinate[0]; i++) {
-					console.log((coordinate[1] + j) + ", " + i + " - " + pieces[i][coordinate[1] + j]);
-					if (pieces[i][coordinate[1] + j] > 9) {
-						$('#row-' + i + ' #' + (coordinate[1] + j)).html(operatorIDIntoString(pieces[i][coordinate[1] + j]));
-					} else {
-						$('#row-' + i + ' #' + (coordinate[1] + j)).html(pieces[i][coordinate[1] + j]);
-					}
-				}
-			}, 1000);
-		}
+		simulateGravity();
 	} else {
-		for (i = 0; i < length; i++) {
-			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html("&darr;");
-		}
-		for (i = 0; i < coordinate[0]; i++) {
-			pieces[i + length][coordinate[1]] = pieces[i][coordinate[1]];
-		}
-		for (i = 0; i < length; i++) {
-			var newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
-			if (newPiece > 9) {
-				newPiece = operatorIDIntoString(newPiece);
-			}
-			pieces[i][coordinate[1]] = newPiece;
-		}
-		setTimeout(function() {
-			for (i = 0; i < coordinate[0] + length; i++) {
-				if (pieces[i][coordinate[1]] > 9) {
-					$('#row-' + i + ' #' + coordinate[1]).html(operatorIDIntoString(pieces[i][coordinate[1]]));
-				} else {
-					$('#row-' + i + ' #' + coordinate[1]).html(pieces[i][coordinate[1]]);
-				}
-			}
-		}, 1000);
 	}
 }
 
@@ -236,7 +227,6 @@ function generateBoard() {
 			pieces[i][j] = generatePiece(getRandomInt(1, params.diffMax), params.diff);
 		}
 	}
-	console.log(pieces);
 	drawPieces();
 }
 
