@@ -4,46 +4,72 @@ var params;
 var boardExists;
 var target = 10;
 
-function simulateGravity() {
+function simulateGravityHorizontal() {
 	zeroesRemaining = true;
 	while (zeroesRemaining) {
-		for (i = 0; i < params.dimensions[0]; i++) {
-			for (j = 0; j < params.dimensions[1]; j++) {
+		for (i = 0; i < pieces.length; i++) {
+			for (j = 0; j < pieces[i].length; j++) {
 				if (pieces[i][j] == 0) {
-					pieces[i][j] = pieces[i-1][j];
-					pieces[i-1][j] = 0;
-					$('#row-' + (i-1) + ' #' + j).html("&darr;");
-					newPiece = pieces[i][j];
-					if (pieces[i][j] > 9) {
-						newPiece = operatorIDIntoString(pieces[i][j]);
+					pieces[i][j] = pieces[i - 1][j];
+					pieces[i - 1][j] = 0;
+					$('#row-' + (i - 1) + ' #' + j).html("0");
+					piece = pieces[i][j];
+					if (piece > 9) {
+						piece = operatorIDIntoString(piece);
 					}
-					$('#row-' + (i) + ' #' + j).html(newPiece);
+					$('#row-' + i + ' #' + j).html(piece);
+					if (i - 1 == 0) {
+						zeroesRemaining = false;
+					}
 				}
 			}
 		}
+	}
+}
 
-		zeroesRemaining = false;
-
-		for (i = 0; i < params.dimensions[0]; i++) {
-			for (j = 0; j < params.dimensions[1]; j++) {
+function simulateGravityVertical(length) {
+	for (l = 0; l < length; l++) {
+		for (i = pieces.length - 1; i > 0; i--) {
+			for (j = 0; j < pieces[i].length; j++) {
 				if (pieces[i][j] == 0) {
-					zeroesRemaining = true;
+					pieces[i][j] = pieces[i - 1][j];
+					pieces[i - 1][j] = 0;
+					$('#row-' + (i - 1) + ' #' + j).html("0");
+					piece = pieces[i][j];
+					if (piece > 9) {
+						piece = operatorIDIntoString(piece);
+					}
+					$('#row-' + i + ' #' + j).html(piece);
 				}
 			}
 		}
-		console.log('loop');
 	}
 	console.log('function ran');
 }
+
 function removeSolution(coordinate, length, horizontal) {
 	//coordinate 0 is row, coordinate 1 is column
+	var newPiece;
 	if (horizontal) {
 		for (i = 0; i < length; i++) {
-			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html("&darr;");
+			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html("0");
 			pieces[coordinate[0]][coordinate[1] + i] = 0;
 		}
-		simulateGravity();
+		simulateGravityHorizontal();
+		for (i = 0; i < length; i++) {
+			newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+			if (newPiece > 9) {
+				newPiece = operatorIDIntoString(newPiece);
+			}
+			pieces[0][coordinate[1] + i] = newPiece;
+			$('#row-0 #' + (coordinate[1] + i)).html(newPiece);
+		}
 	} else {
+		for (i = 0; i < length; i++) {
+			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html("0");
+			pieces[coordinate[0] + i][coordinate[1]] = 0;
+		}
+		simulateGravityVertical(length);
 	}
 }
 
