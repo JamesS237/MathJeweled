@@ -51,6 +51,8 @@ function simulateGravityVertical(length) {
 function removeSolution(coordinate, length, horizontal) {
 	//this is a hackey place to put this next line
 	$('#score').html(score);
+	target = getRandomInt(1,25);
+	$('#target').html(target);
 	//coordinate 0 is row, coordinate 1 is column
 	var newPiece;
 	if (horizontal) {

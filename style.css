@@ -110,6 +110,6 @@ section#main #start-game:hover {
 	width: 30%;
 	text-align: center;
 }
-#score {
+span {
 	font-size: 1.5em;
 }
