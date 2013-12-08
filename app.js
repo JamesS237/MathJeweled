@@ -4,6 +4,7 @@ var params;
 var boardExists;
 var target = 10;
 var score = 0;
+var moves = 0;
 
 function simulateGravityHorizontal() {
 	zeroesRemaining = true;
@@ -333,6 +334,8 @@ $(document).ready(function() {
 							$('.selected').css('color', '#2c3e50');
 							$('.selected').removeClass('selected');
 							$('.psuedo-selected').removeClass('psuedo-selected');
+							moves += 1;
+							$('#moves').html(moves);
 							checkBoard(xSelected, ySelected, x, y);
 						}, 500);
 					},500);
