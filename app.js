@@ -139,7 +139,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation1 = firstRow.substr(i, j);
 				if (eval(equation1) == target) {
 					console.log('success');
-					score += 1;
+					score += (equation1.length - 2) * 10;
 					removeSolution([x1, i], j, true);
 				}
 			}
@@ -150,7 +150,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation2 = secondRow.substr(i, j);
 				if (eval(equation2) == target) {
 					console.log('success');
-					score += 1;
+					score += (equation2.length - 2) * 10;
 					removeSolution([x2, i], j, true);
 				}
 			}
@@ -187,7 +187,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation1 = firstColumn.substr(i, j);
 				if (eval(equation1) == target) {
 					console.log('success');
-					score += 1;
+					score += (equation1.length - 2) * 10;
 					removeSolution([i, y1], j, false);
 				}
 			}
@@ -198,7 +198,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation2 = secondColumn.substr(i, j);
 				if (eval(equation2) == target) {
 					console.log('success');
-					score += 1;
+					score += (equation2.length - 2) * 10;
 					removeSolution([i, y2], j, false);
 				}
 			}
