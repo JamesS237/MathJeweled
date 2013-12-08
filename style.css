@@ -97,11 +97,6 @@ section#main #start-game:hover {
 	-webkit-transition: 0.5s color ease;
 }
 
-.operator {
-	background-color: #ddd;
-	color: #2c3e50;
-}
-
 .selected {
 	background-color: #c0392b;
 	color: #ecf0f1;

@@ -3,6 +3,7 @@ var pieces;
 var params;
 var boardExists;
 var target = 10;
+var score = 0;
 
 function simulateGravityHorizontal() {
 	zeroesRemaining = true;
@@ -48,6 +49,8 @@ function simulateGravityVertical(length) {
 }
 
 function removeSolution(coordinate, length, horizontal) {
+	//this is a hackey place to put this next line
+	$('#score').html(score);
 	//coordinate 0 is row, coordinate 1 is column
 	var newPiece;
 	if (horizontal) {
@@ -68,8 +71,17 @@ function removeSolution(coordinate, length, horizontal) {
 		for (i = 0; i < length; i++) {
 			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html("0");
 			pieces[coordinate[0] + i][coordinate[1]] = 0;
+
 		}
 		simulateGravityVertical(length);
+		for (i = 0; i < length; i++) {
+			newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+			if (newPiece > 9) {
+				newPiece = operatorIDIntoString(newPiece);
+			}
+			pieces[i][coordinate[1]] = newPiece;
+			$('#row-' + i + ' #' + coordinate[1]).html(newPiece);
+		}
 	}
 }
 
@@ -124,6 +136,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation1 = firstRow.substr(i, j);
 				if (eval(equation1) == target) {
 					console.log('success');
+					score += 1;
 					removeSolution([x1, i], j, true);
 				}
 			}
@@ -134,6 +147,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation2 = secondRow.substr(i, j);
 				if (eval(equation2) == target) {
 					console.log('success');
+					score += 1;
 					removeSolution([x2, i], j, true);
 				}
 			}
@@ -170,6 +184,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation1 = firstColumn.substr(i, j);
 				if (eval(equation1) == target) {
 					console.log('success');
+					score += 1;
 					removeSolution([i, y1], j, false);
 				}
 			}
@@ -180,6 +195,7 @@ function checkBoard(x1, y1, x2, y2) {
 				equation2 = secondColumn.substr(i, j);
 				if (eval(equation2) == target) {
 					console.log('success');
+					score += 1;
 					removeSolution([i, y2], j, false);
 				}
 			}
@@ -231,12 +247,10 @@ function drawPieces() {
 		$('#board').append("<div class='row' id='row-" + i + "'>");
 		for (j = 0; j < pieces[i].length; j++) {
 			var currentPiece = pieces[i][j];
-			var operator = '';
 			if (currentPiece > 9) {
-				operator = 'operator';
 				currentPiece = operatorIDIntoString(currentPiece);
 			}
-			$('#row-' + i).append("<div class='tile " + operator + "' id='" + j + "'>" + currentPiece + "</div>");
+			$('#row-' + i).append("<div class='tile' id='" + j + "'>" + currentPiece + "</div>");
 		}
 		sizePieces();
 	}
