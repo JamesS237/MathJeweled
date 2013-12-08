@@ -101,15 +101,33 @@ section#main #start-game:hover {
 	background-color: #c0392b;
 	color: #ecf0f1;
 }
+
 .psuedo-selected {
 	background-color: #c0392b;
 	color: #ecf0f1;
 }
+
 #scoreboard {
 	float: right;
 	width: 30%;
 	text-align: center;
 }
-span {
+
+#scoreboard h2 {
+	display: block;
+	width: 80%;
+	padding: 0.25em 10%;
 	font-size: 1.5em;
+	font-weight: 300;
+	background-color: #2980b9;
+	color: #ecf0f1;
+}
+
+span {
+	display: block;
+	width: 80%;
+	padding: 0.25em 10%;
+	font-size: 1.5em;
+	font-weight: 300;
+	background-color: #ecf0f1;
 }
