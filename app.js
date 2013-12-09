@@ -230,7 +230,7 @@ function idIntoString(id) {
 	} else if (id == 13) {
 		return '&divide;';
 	} else if (id == 14) {
-		return 'R';
+		return '%';
 	}
 }
 function idIntoOperator(id) {
@@ -279,13 +279,13 @@ function startGame() {
 		Math.seedrandom($('#seed').val());
 	}
 	if ($('#diff').val() == 1) {
-		var diffMax = 2;
+		var diffMax = 3;
 		var targetMax = 15;
 		var operatorMax = 11;
 	}
 	else if ($('#diff').val() == 2) {
 		var diffMax = 3;
-		var targetMax = 50;
+		var targetMax = 30;
 		var operatorMax = 13;
 	}
 	else if ($('#diff').val() == 3) {
