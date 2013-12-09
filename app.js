@@ -26,7 +26,6 @@ function simulateGravity() {
 						}
 					}
 					catch (Error) {
-						console.log('0 bug');
 						zeroesRemaining = false;
 					}
 				}
@@ -37,7 +36,7 @@ function simulateGravity() {
 
 function removeSolution(coordinate, length, horizontal) {
 	$('#score').html(score);
-	target = getRandomInt(1, 100);
+	target = getRandomInt(1, params.targetMax);
 	$('#target').html(target);
 	//coordinate 0 is row, coordinate 1 is column
 	var newPiece;
@@ -55,7 +54,7 @@ function removeSolution(coordinate, length, horizontal) {
 			}
 			simulateGravity();
 			for (i = 0; i < length; i++) {
-				newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+				newPiece = generatePiece(getRandomInt(1, params.diffMax));
 				pieces[0][coordinate[1] + i] = newPiece;
 				$('#row-0 #' + (coordinate[1] + i)).html(idIntoString(newPiece));
 			}
@@ -75,7 +74,7 @@ function removeSolution(coordinate, length, horizontal) {
 			}
 			simulateGravity(length);
 			for (i = 0; i < length; i++) {
-				newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+				newPiece = generatePiece(getRandomInt(1, params.diffMax));
 				if (newPiece > 9) {
 					newPiece = idIntoString(newPiece);
 				}
@@ -212,15 +211,10 @@ function checkBoard(x1, y1, x2, y2) {
 }
 
 function generatePiece(id, diff) { //identifier is 1-10
-	if (diff == 1) { //easy
-		if (id == 1) { //generate an operator
-			return getRandomInt(10,13);
-		} else { //generate a piece
-			return getRandomInt(1,9);
-		}
-
-		//1-9 are their respective numbers
-		// 10 is plus, 11 is minus, 12 is multiply, 13 is divide
+	if (id == 1) { //generate an operator
+		return getRandomInt(10,params.operatorMax);
+	} else { //generate a piece
+		return getRandomInt(1,9);
 	}
 }
 
@@ -235,6 +229,8 @@ function idIntoString(id) {
 		return '&times';
 	} else if (id == 13) {
 		return '&divide;';
+	} else if (id == 14) {
+		return 'R';
 	}
 }
 function idIntoOperator(id) {
@@ -248,6 +244,8 @@ function idIntoOperator(id) {
 		return '*';
 	} else if (id == 13) {
 		return '/';
+	} else if (id == 14) {
+		return '%';
 	}
 }
 
@@ -255,10 +253,7 @@ function drawPieces() {
 	for (i = 0; i < pieces.length; i++) {
 		$('#board').append("<div class='row' id='row-" + i + "'>");
 		for (j = 0; j < pieces[i].length; j++) {
-			var currentPiece = pieces[i][j];
-			if (currentPiece > 9) {
-				currentPiece = idIntoString(currentPiece);
-			}
+			var currentPiece = idIntoString(pieces[i][j]);
 			$('#row-' + i).append("<div class='tile' id='" + j + "'>" + currentPiece + "</div>");
 		}
 		sizePieces();
@@ -273,7 +268,7 @@ function generateBoard() {
 	for (i = 0; i < params.dimensions[1]; i++) {
 		pieces[i] = []
 		for (j = 0; j < params.dimensions[0]; j++) {
-			pieces[i][j] = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+			pieces[i][j] = generatePiece(getRandomInt(1, params.diffMax));
 		}
 	}
 	drawPieces();
@@ -284,9 +279,21 @@ function startGame() {
 		Math.seedrandom($('#seed').val());
 	}
 	if ($('#diff').val() == 1) {
-		var diffMax = 3;
+		var diffMax = 2;
+		var targetMax = 15;
+		var operatorMax = 11;
 	}
-	params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [7, 7]};
+	else if ($('#diff').val() == 2) {
+		var diffMax = 3;
+		var targetMax = 50;
+		var operatorMax = 13;
+	}
+	else if ($('#diff').val() == 3) {
+		var diffMax = 4;
+		var targetMax = 50;
+		var operatorMax = 14;
+	}
+	params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [7, 7], targetMax: targetMax, operatorMax: operatorMax};
 	$('#main-menu').hide("slow");
 	$('#game').show("slow");
 	generateBoard(params);
