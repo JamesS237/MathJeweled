@@ -46,7 +46,6 @@ function simulateGravityVertical(length) {
 			}
 		}
 	}
-	console.log('function ran');
 }
 
 function removeSolution(coordinate, length, horizontal) {
@@ -58,33 +57,49 @@ function removeSolution(coordinate, length, horizontal) {
 	var newPiece;
 	if (horizontal) {
 		for (i = 0; i < length; i++) {
-			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html("0");
-			pieces[coordinate[0]][coordinate[1] + i] = 0;
+			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).addClass('selected');
+			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#ecf0f1');
 		}
-		simulateGravityHorizontal();
-		for (i = 0; i < length; i++) {
-			newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
-			if (newPiece > 9) {
-				newPiece = operatorIDIntoString(newPiece);
+		setTimeout(function() {
+			for (i = 0; i < length; i++) {
+				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).removeClass('selected');
+				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#2c3e50');
+				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html('0');
+				pieces[coordinate[0]][coordinate[1] + i] = 0;
 			}
-			pieces[0][coordinate[1] + i] = newPiece;
-			$('#row-0 #' + (coordinate[1] + i)).html(newPiece);
-		}
+			simulateGravityHorizontal();
+			for (i = 0; i < length; i++) {
+				newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+				if (newPiece > 9) {
+					newPiece = operatorIDIntoString(newPiece);
+				}
+				pieces[0][coordinate[1] + i] = newPiece;
+				$('#row-0 #' + (coordinate[1] + i)).html(newPiece);
+			}
+		}, 500);
 	} else {
 		for (i = 0; i < length; i++) {
-			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html("0");
-			pieces[coordinate[0] + i][coordinate[1]] = 0;
+			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).addClass('selected');
+			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#ecf0f1');
+		}
+		setTimeout(function() {
+			for (i = 0; i < length; i++) {
+				$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).removeClass('selected');
+				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#2c3e50');
+				$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html('0');
+				pieces[coordinate[0] + i][coordinate[1]] = 0;
 
-		}
-		simulateGravityVertical(length);
-		for (i = 0; i < length; i++) {
-			newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
-			if (newPiece > 9) {
-				newPiece = operatorIDIntoString(newPiece);
 			}
-			pieces[i][coordinate[1]] = newPiece;
-			$('#row-' + i + ' #' + coordinate[1]).html(newPiece);
-		}
+			simulateGravityVertical(length);
+			for (i = 0; i < length; i++) {
+				newPiece = generatePiece(getRandomInt(1, params.diffMax), params.diff);
+				if (newPiece > 9) {
+					newPiece = operatorIDIntoString(newPiece);
+				}
+				pieces[i][coordinate[1]] = newPiece;
+				$('#row-' + i + ' #' + coordinate[1]).html(newPiece);
+			}
+		}, 500);
 	}
 }
 
@@ -112,101 +127,105 @@ function checkBoard(x1, y1, x2, y2) {
 	var firstRow = "";
 
 	for (var i = 0; i < pieces.length; i++) {
-		if (pieces[x1][i] > 9) {
-			firstRow += operatorIDIntoOperator(pieces[x1][i]);
-		} else {
-			firstRow += pieces[x1][i];
-		}
+		firstRow += idIntoOperator(pieces[x1][i]);
 	}
+
+	var secondRow = "";
+
 	if (x1 != x2) {
-		var secondRow = "";
 		for (var i = 0; i < pieces.length; i++) {
-			if (pieces[x2][i] > 9) {
-				secondRow += operatorIDIntoOperator(pieces[x2][i]);
-			} else {
-				secondRow += pieces[x2][i];
-			}
+			secondRow += idIntoOperator(pieces[x2][i]);
 		}
 	}
+	console.log('############################');
+	console.log(firstRow);
+	console.log(secondRow);
+	console.log('############################');
 
 	var equation1;
 	var equation2;
-	var coordinates;
 
-	for (var i = 0; i < params.dimensions[0]; i++) {
-		for (var j = 3; j < params.dimensions[0] - i + 1; j++) {
+	for (var i = 0; i < pieces[0].length; i++) {
+		for (var j = 3; j < pieces[0].length - i + 1; j++) {
+			equation1 = firstRow.substr(i, j);
 			try {
-				equation1 = firstRow.substr(i, j);
 				if (eval(equation1) == target) {
 					console.log('success');
 					score += (equation1.length - 2) * 10;
 					removeSolution([x1, i], j, true);
 				}
+				console.log(equation1 + ' - ' + eval(equation1));
 			}
 			catch (Error) {
-
+				console.log('Error - ' + equation1);
 			}
-			try {
+			if (x1 != x2) {
 				equation2 = secondRow.substr(i, j);
-				if (eval(equation2) == target) {
-					console.log('success');
-					score += (equation2.length - 2) * 10;
-					removeSolution([x2, i], j, true);
+				try {
+					if (eval(equation2) == target) {
+						console.log('success');
+						score += (equation2.length - 2) * 10;
+						removeSolution([x2, i], j, true);
+					}
+					console.log(equation2 + ' - ' + eval(equation2));
 				}
-			}
-			catch (Error) {
-
+				catch (Error) {
+					console.log('Error - ' + equation2);
+				}
 			}
 		}
 	}
+
+	console.log('-----------------------------------');
 
 	var firstColumn = "";
 
 	for (var i = 0; i < pieces.length; i++) {
-		if (pieces[i][y1] > 9) {
-			firstColumn += operatorIDIntoOperator(pieces[i][y1]);
-		} else {
-			firstColumn += pieces[i][y1];
-		}
+		firstColumn += idIntoOperator(pieces[i][y1]);
 	}
 
+	var secondColumn = "";
 	if (y1 != y2) {
-		var secondColumn = "";
 		for (var i = 0; i < pieces.length; i++) {
-			if (pieces[i][y2] > 9) {
-				secondColumn += operatorIDIntoOperator(pieces[i][y2]);
-			} else {
-				secondColumn += pieces[i][y2];
-			}
+			secondColumn += idIntoOperator(pieces[i][y2]);
 		}
 	}
+	console.log('############################');
+	console.log(firstColumn);
+	console.log(secondColumn);
+	console.log('############################');
 
 	for (var i = 0; i < params.dimensions[1]; i++) {
 		for (var j = 3; j < params.dimensions[1] - i + 1; j++) {
+			equation1 = firstColumn.substr(i, j);
 			try {
-				equation1 = firstColumn.substr(i, j);
 				if (eval(equation1) == target) {
 					console.log('success');
 					score += (equation1.length - 2) * 10;
 					removeSolution([i, y1], j, false);
 				}
+				console.log(equation1 + ' - ' + eval(equation1));
 			}
 			catch (Error) {
-
+				console.log('Error - ' + equation1);
 			}
-			try {
+			if (x1 != x2) {
 				equation2 = secondColumn.substr(i, j);
-				if (eval(equation2) == target) {
-					console.log('success');
-					score += (equation2.length - 2) * 10;
-					removeSolution([i, y2], j, false);
+				try {
+					if (eval(equation2) == target) {
+						console.log('success');
+						score += (equation2.length - 2) * 10;
+						removeSolution([i, y2], j, false);
+					}
+					console.log(equation2 + ' - ' + eval(equation2));
 				}
-			}
-			catch (Error) {
-
+				catch (Error) {
+					console.log('Error - ' + equation1);
+				}
 			}
 		}
 	}
+	console.log('-----------------------------------');
 }
 
 function generatePiece(id, diff) { //identifier is 1-10
@@ -233,8 +252,10 @@ function operatorIDIntoString(id) {
 		return '&divide;';
 	}
 }
-function operatorIDIntoOperator(id) {
-	if (id == 10) {
+function idIntoOperator(id) {
+	if (id < 10) {
+		return "" + id;
+	} else if (id == 10) {
 		return '+';
 	} else if (id == 11) {
 		return '-';
@@ -296,7 +317,6 @@ $(window).resize(function() {
 $(document).ready(function() {
 	var currentUnix = new Date().getTime();
 	Math.seedrandom(currentUnix.toString());
-	console.log('document ready');
 
 	$('#start-game').click(function () {
 		startGame();
