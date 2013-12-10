@@ -132,6 +132,21 @@ passport.use(new FacebookStrategy({
 ));
 
 //Local
+passport.use(new LocalStrategy(function(username, password, done) {
+  User.execute({ username: username }, function(err, user) { //find users with username : username
+    if (err) { return done(err); } //error handling
+    if (!user) { return done(null, false, { message: 'Unknown user ' + username }); } //error handling
+
+    user.comparePassword(password, function(err, isMatch) { //compare candiate password
+      if (err) return done(err); //error handling
+      if(isMatch) {
+        return done(null, user); //return user
+      } else {
+        return done(null, false, { message: 'Invalid password' }); //error handling
+      }
+    });
+  });
+}));
 
 
 
