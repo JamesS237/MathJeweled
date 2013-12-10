@@ -1,0 +1,20 @@
+{
+  "name": "mathjewled",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.3.7",
+    "redis": "~0.9.1",
+    "thinky": "~0.2.15",
+    "connect-redis": "~1.4.6",
+    "passport": "~0.1.17",
+    "passport-facebook": "~1.0.2",
+    "passport-twitter": "~1.0.2",
+    "passport-local": "~0.1.6",
+    "node-uuid": "~1.4.1",
+    "bcrypt-nodejs": "0.0.3"
+  }
+}

@@ -1,360 +1,197 @@
-//globals
-var pieces;
-var params;
-var boardExists;
-var target = 10;
-var score = 0;
-var moves = 0;
 
-function simulateGravity() {
-	zeroesRemaining = true;
-	while (zeroesRemaining) {
-		for (i = 0; i < pieces.length; i++) {
-			for (j = 0; j < pieces[i].length; j++) {
-				if (pieces[i][j] == 0) {
-					try {
-						pieces[i][j] = pieces[i - 1][j];
-						pieces[i - 1][j] = 0;
-						$('#row-' + (i - 1) + ' #' + j).html("0");
-						piece = pieces[i][j];
-						if (piece > 9) {
-							piece = idIntoString(piece);
-						}
-						$('#row-' + i + ' #' + j).html(piece);
-						if (i - 1 == 0) {
-							zeroesRemaining = false;
-						}
-					}
-					catch (Error) {
-						zeroesRemaining = false;
-					}
-				}
-			}
-		}
-	}
+/**
+ * Module dependencies.
+ */
+
+var express = require('express'),
+    http = require('http');
+
+var config = require('./config');
+
+var RedisClient = config.redis.createClient.call(config.getEnv('redis')),
+    RedisStore = require('connect-redis')(express);
+
+var app = express(),
+    route = require('./route');
+
+var passport = require('passport'),
+    FacebookStrategy = require('passport-facebook').Strategy,
+    TwitterStrategy = require('passport-twitter').Strategy,
+    LocalStrategy = require('passport-local').Strategy,
+    keys = require('./passport');
+
+
+var RethinkClient = config.thinky.createClient.call(config.getEnv('thinky')),
+    User = require('./model/user')(RethinkClient);
+
+var uuid = require('node-uuid');
+
+// all environments
+app.set('port', process.env.PORT || 3000);
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.cookieParser('your secret here'));
+app.use(express.session({ store: new RedisStore({client:RedisClient}), secret: 'keyboard cat' })));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static('./public'));
+app.use(app.router);
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
 }
 
-function removeSolution(coordinate, length, horizontal) {
-	$('#score').html(score);
-	target = getRandomInt(1, params.targetMax);
-	$('#target').html(target);
-	//coordinate 0 is row, coordinate 1 is column
-	var newPiece;
-	if (horizontal) {
-		for (i = 0; i < length; i++) {
-			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).addClass('selected');
-			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#ecf0f1');
-		}
-		setTimeout(function() {
-			for (i = 0; i < length; i++) {
-				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).removeClass('selected');
-				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#2c3e50');
-				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).html('0');
-				pieces[coordinate[0]][coordinate[1] + i] = 0;
-			}
-			simulateGravity();
-			for (i = 0; i < length; i++) {
-				newPiece = generatePiece(getRandomInt(1, params.diffMax));
-				pieces[0][coordinate[1] + i] = newPiece;
-				$('#row-0 #' + (coordinate[1] + i)).html(idIntoString(newPiece));
-			}
-		}, 500);
-	} else {
-		for (i = 0; i < length; i++) {
-			$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).addClass('selected');
-			$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#ecf0f1');
-		}
-		setTimeout(function() {
-			for (i = 0; i < length; i++) {
-				$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).removeClass('selected');
-				$('#row-' + coordinate[0] + ' #' + (coordinate[1] + i)).css('color', '#2c3e50');
-				$('#row-' + (coordinate[0] + i) + ' #' + coordinate[1]).html('0');
-				pieces[coordinate[0] + i][coordinate[1]] = 0;
+/*
+ * Passport Authentication Strategys
+ */
 
-			}
-			simulateGravity(length);
-			for (i = 0; i < length; i++) {
-				newPiece = generatePiece(getRandomInt(1, params.diffMax));
-				if (newPiece > 9) {
-					newPiece = idIntoString(newPiece);
-				}
-				pieces[i][coordinate[1]] = newPiece;
-				$('#row-' + i + ' #' + coordinate[1]).html(newPiece);
-			}
-		}, 500);
-	}
-}
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
 
-function getRandomInt(low, high) {
-	return parseInt(Math.random() * (high - low + 1) + low);
-}
+passport.deserializeUser(function(id, done) {
+  User.execute({ uid: uid }, function (err, user) {
+    done(err, user);
+  });
+});
 
-function getTileDimensions() {
-	return $('.tile').outerWidth();
-}
+//Twitter
+passport.use(new TwitterStrategy({
+    consumerKey: keys.twitter.consumerKey,
+    consumerSecret: keys.twitter.consumerSecret,
+    callbackURL: config.hostname + "/auth/twitter/callback"
+  },
+  function(token, tokenSecret, profile, done) {
+    User.execute({uid: profile.id}, function(err, user) {
+      if(user) {
+        //user already exists, so just return their profile
+        done(null, user);
+      } else {
+        //this is a new user! such user. very new. excite. wow.
+        //so....
+        //lets put togther their profile to save
+        var user = {};
+        user.provider = "twitter";
+        user.uid = profile.id;
+        user.name = profile.displayName;
+        user.image = profile._json.profile_image_url;
+        user.email = profile.emails[0];
 
-function sizePieces() {
-	$('.tile').css('width', 100 / params.dimensions[0] + "%");
-	setTimeout(function() {
-		$('.tile').css('height', getTileDimensions() + "px");
-		$('.tile').css('line-height', getTileDimensions() + "px");
-		$('.tile').css('font-size', getTileDimensions() * 0.75 + "px");
-	}, 1000);
-}
+        //turns the above into thinky model
+        var userModel = new User(user);
+        userModel.save({saveJoin: true},function(err) {
+          if(err) {
+            //shit.
+            throw err;
+          };
+          //now that they're saved, just return their profile;
+          done(null, user);
+        });
+      }
+    });
+  }
+));
 
-function checkBoard(x1, y1, x2, y2) {
+//Facebook
+passport.use(new FacebookStrategy({
+    clientID: keys.facebook.clientID,
+    clientSecret: keys.facebook.clientSecret,
+    callbackURL: config.hostname + "/auth/facebook/callback"
+  },
+  function(token, tokenSecret, profile, done) {
+    User.execute({uid: profile.id}, function(err, user) {
+      if(user) {
+        //user already exists, so just return their profile
+        done(null, user);
+      } else {
+        //this is a new user! such user. very new. excite. wow.
+        //so....
+        //lets put togther their profile to save
+        var user = {};
+        user.provider = "facebook";
+        user.uid = profile.id;
+        user.name = profile.displayName;
+        user.image = profile._json.profile_image_url;
+        user.email = profile.emails[0];
 
-	//check the rows...
+        //turns the above into thinky model
+        var userModel = new User(user);
+        userModel.save({saveJoin: true},function(err) {
+          if(err) {
+            //shit.
+            throw err;
+          };
+          //now that they're saved, just return their profile;
+          done(null, user);
+        });
+      }
+    });
+  }
+));
 
-	var firstRow = "";
+//Local
 
-	for (var i = 0; i < pieces.length; i++) {
-		firstRow += idIntoOperator(pieces[x1][i]);
-	}
 
-	var secondRow = "";
 
-	if (x1 != x2) {
-		for (var i = 0; i < pieces.length; i++) {
-			secondRow += idIntoOperator(pieces[x2][i]);
-		}
-	}
-	console.log('############################');
-	console.log(firstRow);
-	console.log(secondRow);
-	console.log('############################');
+/*
+ * Routes
+ */
 
-	var equation1;
-	var equation2;
+//application
+app.get('/', route.index);
 
-	for (var i = 0; i < pieces[0].length; i++) {
-		for (var j = 3; j < pieces[0].length - i + 1; j++) {
-			equation1 = firstRow.substr(i, j);
-			try {
-				if (eval(equation1) == target) {
-					console.log('success');
-					score += (equation1.length - 2) * 10;
-					removeSolution([x1, i], j, true);
-				}
-				console.log(equation1 + ' - ' + eval(equation1));
-			}
-			catch (Error) {
-				console.log('Error - ' + equation1);
-			}
-			if (x1 != x2) {
-				equation2 = secondRow.substr(i, j);
-				try {
-					if (eval(equation2) == target) {
-						console.log('success');
-						score += (equation2.length - 2) * 10;
-						removeSolution([x2, i], j, true);
-					}
-					console.log(equation2 + ' - ' + eval(equation2));
-				}
-				catch (Error) {
-					console.log('Error - ' + equation2);
-				}
-			}
-		}
-	}
+/*
+ * User
+ */
 
-	console.log('-----------------------------------');
-
-	var firstColumn = "";
-
-	for (var i = 0; i < pieces.length; i++) {
-		firstColumn += idIntoOperator(pieces[i][y1]);
-	}
-
-	var secondColumn = "";
-	if (y1 != y2) {
-		for (var i = 0; i < pieces.length; i++) {
-			secondColumn += idIntoOperator(pieces[i][y2]);
-		}
-	}
-	console.log('############################');
-	console.log(firstColumn);
-	console.log(secondColumn);
-	console.log('############################');
-
-	for (var i = 0; i < params.dimensions[1]; i++) {
-		for (var j = 3; j < params.dimensions[1] - i + 1; j++) {
-			equation1 = firstColumn.substr(i, j);
-			try {
-				if (eval(equation1) == target) {
-					console.log('success');
-					score += (equation1.length - 2) * 10;
-					removeSolution([i, y1], j, false);
-				}
-				console.log(equation1 + ' - ' + eval(equation1));
-			}
-			catch (Error) {
-				console.log('Error - ' + equation1);
-			}
-			if (x1 != x2) {
-				equation2 = secondColumn.substr(i, j);
-				try {
-					if (eval(equation2) == target) {
-						console.log('success');
-						score += (equation2.length - 2) * 10;
-						removeSolution([i, y2], j, false);
-					}
-					console.log(equation2 + ' - ' + eval(equation2));
-				}
-				catch (Error) {
-					console.log('Error - ' + equation1);
-				}
-			}
-		}
-	}
-	console.log('-----------------------------------');
-}
-
-function generatePiece(id, diff) { //identifier is 1-10
-	if (id == 1) { //generate an operator
-		return getRandomInt(10,params.operatorMax);
-	} else { //generate a piece
-		return getRandomInt(1,9);
-	}
-}
-
-function idIntoString(id) {
-	if (id < 10) {
-		return "" + id;
-	} else if (id == 10) {
-		return '+';
-	} else if (id == 11) {
-		return '-';
-	} else if (id == 12) {
-		return '&times';
-	} else if (id == 13) {
-		return '&divide;';
-	} else if (id == 14) {
-		return '%';
-	}
-}
-function idIntoOperator(id) {
-	if (id < 10) {
-		return "" + id;
-	} else if (id == 10) {
-		return '+';
-	} else if (id == 11) {
-		return '-';
-	} else if (id == 12) {
-		return '*';
-	} else if (id == 13) {
-		return '/';
-	} else if (id == 14) {
-		return '%';
-	}
-}
-
-function drawPieces() {
-	for (i = 0; i < pieces.length; i++) {
-		$('#board').append("<div class='row' id='row-" + i + "'>");
-		for (j = 0; j < pieces[i].length; j++) {
-			var currentPiece = idIntoString(pieces[i][j]);
-			$('#row-' + i).append("<div class='tile' id='" + j + "'>" + currentPiece + "</div>");
-		}
-		sizePieces();
-	}
-}
-function generateBoard() {
-	$('#main').css('width', '70%');
-	$('#main').css('padding', '4%');
-	boardExists = true;
-	console.log('running');
-	pieces = [];
-	for (i = 0; i < params.dimensions[1]; i++) {
-		pieces[i] = []
-		for (j = 0; j < params.dimensions[0]; j++) {
-			pieces[i][j] = generatePiece(getRandomInt(1, params.diffMax));
-		}
-	}
-	drawPieces();
-}
-
-function startGame() {
-	if ($('#seed').val() !== '') {
-		Math.seedrandom($('#seed').val());
-	}
-	if ($('#diff').val() == 1) {
-		var diffMax = 3;
-		var targetMax = 15;
-		var operatorMax = 11;
-	}
-	else if ($('#diff').val() == 2) {
-		var diffMax = 3;
-		var targetMax = 30;
-		var operatorMax = 13;
-	}
-	else if ($('#diff').val() == 3) {
-		var diffMax = 4;
-		var targetMax = 50;
-		var operatorMax = 14;
-	}
-	params = {diff: $('#diff').val(), diffMax: diffMax, dimensions: [7, 7], targetMax: targetMax, operatorMax: operatorMax};
-	$('#main-menu').hide("slow");
-	$('#game').show("slow");
-	generateBoard(params);
-}
-
-$(window).resize(function() {
-	if (boardExists) {
-		sizePieces();
-	}
+//Twitter
+app.get('/auth/twitter', passport.authenticate('twitter'), function(req, res){
+  // The request will be redirected to Twitter for authentication, so this function will not be called.
+});
+app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), function(req, res) {
+  res.redirect('/'); //redirect to home
 
 });
 
-$(document).ready(function() {
-	var currentUnix = new Date().getTime();
-	Math.seedrandom(currentUnix.toString());
+//Facebook
+app.get('/auth/facebook', passport.authenticate('facebook'), function(req, res){
+  // The request will be redirected to Facebook for authentication, so this function will not be called.
+});
+app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), function(req, res) {
+  res.redirect('/'); //redirect to home
+});
 
-	$('#start-game').click(function () {
-		startGame();
-	});
+//Local
+app.get('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return res.jsonp({success: false, error: err.message, state: 'loggedout'}); }
+    if (!user) { return res.jsonp({success: false, error: 'user not found', state: 'loggedout'}); }
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.jsonp({success: true, error: false, state: 'loggedin'});
+    });
+  })(req, res, next);
+});
 
-	$('#board').on('click', '.tile', function() {
-		if ($(this).hasClass('selected')) {
-			$(this).removeClass('selected');
-		} else {
-			if ($('.selected')[1]) {
-				return;
-			}
-			else if ($('.selected')[0]) {
-				var xSelected = parseInt($('.selected').parent().attr('id').substr(4));
-				var ySelected = parseInt($('.selected').attr('id'));
+//All
 
-				var x = $(this).parent().attr('id').substr(4);
-				var y = $(this).attr('id');
+app.post('/register', route.register);
 
-				if ((Math.abs(xSelected - x) == 0 || Math.abs(xSelected - x) == 1) && (Math.abs(ySelected - y) == 0 || Math.abs(ySelected - y) == 1)) { //wihin range
-					$(this).addClass('psuedo-selected');
-					$('.psuedo-selected').css('color', 'rgba(255, 255, 255, 0)');
-					$('.selected').css('color', 'rgba(255, 255, 255, 0)');
-					setTimeout(function() {
-						var temp = $('.psuedo-selected').html();
-						$('.psuedo-selected').html($('.selected').html());
-						$('.selected').html(temp);
-						temp = pieces[x][y];
-						pieces[x][y] = pieces[xSelected][ySelected];
-						pieces[xSelected][ySelected] = temp;
-						$('.psuedo-selected').css('color', '#ecf0f1');
-						$('.selected').css('color', '#ecf0f1');
-						setTimeout(function() {
-							$('.psuedo-selected').css('color', '#2c3e50');
-							$('.selected').css('color', '#2c3e50');
-							$('.selected').removeClass('selected');
-							$('.psuedo-selected').removeClass('psuedo-selected');
-							moves += 1;
-							$('#moves').html(moves);
-							checkBoard(xSelected, ySelected, x, y);
-						}, 500);
-					},500);
-				}
-			} else {
-				$(this).addClass('selected');
-			}
-		}
-	});
+app.get('/logout', function(req, res){
+  req.logout(); //logout
+  res.jsonp({success: true, error: false, state: 'loggedout'}); //response
+ });
+
+/*
+ * API
+ */
+app.get('/api/highscores/:start/:stop', route.api.highscores.get);
+app.post('/api/highscores', route.api.highscores.create);
+app.get('/api/highscores/rank', route.api.highscores.create);
+
+
+http.createServer(app).listen(app.get('port'), function(){ //create server instance from app
+  console.log('Express server listening on port ' + app.get('port'));
 });
